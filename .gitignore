@@ -62,3 +62,4 @@ build/piolibdeps/LiquidCrystal_I2C_ID576/LiquidCrystal_I2C.cpp
 build/piolibdeps/LiquidCrystal_I2C_ID576/LiquidCrystal_I2C.h
 build/piolibdeps/LiquidCrystal_I2C_ID576/README.md
 build/structure.hash
+.vscode/settings.json

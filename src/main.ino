@@ -26,40 +26,33 @@ const int ENCOCHES_TOTALES = 3200;
 const float DISTANCE_ENCOCHE = (DIAMETRE_ROUE * M_PI)/ENCOCHES_TOTALES;
 const float speedTourner = 0.35;
 
-void Guardien()
-{
-       // string color = GetColor();
-        loop();
-}
 
 void setup()
 {
   //
 }
-//DEUX LOOP GARDIEN
-void loop(){
+
+void ReculeUTurn();
+void UnTrack();
+void DeuxBumpers();
+void Tourner(float theta, float speed0, float speed1);
+void UTurn();
 
 
-    if (ROBUS_IsBumper(2))
+
+void loop()
+{
+    if (ROBUS_IsBumper(3))
     {
-        ReculeUTurn();
+        MOTOR_SetSpeed(0,0.75);
+        MOTOR_SetSpeed(1,0.75);
     }
-   /* while (color == GetColor){
-        //Insérer la fonction de ligne droite
-        MOTOR_SetSpeed(0,0.5);
-        MOTOR_SetSpeed(1,0.5);
-    }*/
-    ReculeUTurn();
-    
-    MOTOR_SetSpeed(0,0.5);
-    MOTOR_SetSpeed(1,0.5); 
-   /* if (color != GetColor)
-    {
-        loop();
-        //Fonction que si il 
-    }*/
-}
 
+    UnTrack();
+    DeuxBumpers();
+
+
+}
 void ReculeUTurn(){
     MOTOR_SetSpeed(0,0);
     MOTOR_SetSpeed(1,0);    
@@ -72,26 +65,15 @@ void ReculeUTurn(){
     delay(100);
     UTurn();
 }
-
-
-/*void loop()
-{
-
-    UnTrack();
-    DeuxBumpers();
-    MOTOR_SetSpeed(0,0.75);
-    MOTOR_SetSpeed(1,0.75);
-}*/
-
 //Fonction qui va faire tourner le robot de bord si il recontre une couleur ou si son parechoc avant est activé.
 void UnTrack(){
     /*string untrackcolor = GetColor();
-    string newcolor;
-    if (ROBUS_IsBumper(2) || color == "Yellow" || color == "Blue" || color == "Red" || color == "Green")
+    string newcolor;*/
+    if (ROBUS_IsBumper(2) /*|| color == "Yellow" || color == "Blue" || color == "Red" || color == "Green"*/)
         {
             ReculeUTurn();
         }
-    */
+    
 }
 
 
