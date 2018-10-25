@@ -12,7 +12,7 @@ Inclure les librairies de functions que vous voulez utiliser
 
 #include <LibRobus.h> // Essentielle pour utiliser RobUS
 #include <math.h>
-#include <ADJDS311.h>
+#include <ADJDS311.h> // Librairie pour utiliser le capteur de couleur
 
 
 /******************************************************************************
@@ -25,6 +25,8 @@ const float DIAMETRE_ROUE  = (7.7); //Diamètre d'une roue en cm
 const int ENCOCHES_TOTALES = 3200;
 const float DISTANCE_ENCOCHE = (DIAMETRE_ROUE * M_PI)/ENCOCHES_TOTALES;
 const float speedTourner = 0.35;
+uint8_t ledPin = 39;
+ADJDS311 color(ledPin);
 
 void Guardien()
 {
@@ -34,7 +36,14 @@ void Guardien()
 
 void setup()
 {
-  //
+    color.init();
+    color.ledOn();
+    // ::init() preset values in the registers.
+    // The S311 and S371 have different gains.
+    // Here you can use ::calibrate() to adjust the sensor's gains.
+    // You can also use ::setintegrationtime() and ::setcapacitor() to adjust the sensor manually
+
+    color.calibrate();  // first make sure the sensor faces a white surface at the focal point
 }
 //DEUX LOOP GARDIEN
 void loop(){
