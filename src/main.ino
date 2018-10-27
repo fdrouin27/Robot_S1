@@ -1,9 +1,9 @@
 /*
-Projet: Le nom du script
-Equipe: Votre numero d'equipe
-Auteurs: Les membres auteurs du script
-Description: Breve description du script
-Date: Derniere date de modification
+Projet: Projet de robot S-1
+Equipe: P-08
+Auteurs: Julien Lavoie, Guillaume Frenette
+Description: Script général du robot, il contient toute les fonctions utilisées dans la loop()
+Date: 2018-10-27
 */
 
 /******************************************************************************
@@ -11,21 +11,23 @@ Inclure les librairies de functions que vous voulez utiliser
 ******************************************************************************/
 
 #include <LibRobus.h> // Essentielle pour utiliser RobUS
-#include <math.h>
+#include <math.h> // Librairie qui permet d'utiliser des fonctions mathématique
 #include <ADJDS311.h> // Librairie pour utiliser le capteur de couleur
+#include <string.h> // Librairie qui permet d'utiliser la variable string
 
 
 /******************************************************************************
 Variables globales et defines
 ******************************************************************************/
-// -> defines...
 // L'ensemble des fonctions y ont accès
 const float DIAMETRE_ROBOT = 18.7; // Distance d'une roue à l'autre GARDIENNNNNNNN
 const float DIAMETRE_ROUE  = (7.7); //Diamètre d'une roue en cm
 const int ENCOCHES_TOTALES = 3200;
 const float DISTANCE_ENCOCHE = (DIAMETRE_ROUE * M_PI)/ENCOCHES_TOTALES;
 const float speedTourner = 0.35;
-uint8_t ledPin = 39;
+
+// Variable pour le capteur de couleur
+uint8_t ledPin = 39; // Numéro de la Pin dans laquelle il faut brancher le fil du capteur de couleur, si vous changer le fil de place, changer le numéro ici
 ADJDS311 color(ledPin);
 
 void Guardien()
@@ -34,39 +36,95 @@ void Guardien()
         loop();
 }
 
-void setup()
+// Enum qui contient une liste de couleur
+enum Color 
+{ 
+    Red, 
+    Green,
+    Blue,
+    Yellow,
+    White
+};
+
+// Fonction qui vérifie les valeurs retourné par le capteur de couleur et la défini
+void checkColor()
 {
-    color.init();
-    color.ledOn();
-    // ::init() preset values in the registers.
-    // The S311 and S371 have different gains.
-    // Here you can use ::calibrate() to adjust the sensor's gains.
-    // You can also use ::setintegrationtime() and ::setcapacitor() to adjust the sensor manually
+    // Instancie une variable de l'enum afin de pouvoir utiliser les valeurs de celles-ci
+    Color enumColor;
 
-    color.calibrate();  // first make sure the sensor faces a white surface at the focal point
-}
-//DEUX LOOP GARDIEN
-void loop(){
-
-
-    if (ROBUS_IsBumper(2))
+    // Si la lecture de la couleur rouge par le capteur est plus grande que les autre alors la couleur est rouge
+    if(color.readRed() > color.readGreen() && color.readRed() > color.readBlue() && color.readRed() > color.readClear())
     {
-        ReculeUTurn();
+        enumColor = Red;
     }
-   /* while (color == GetColor){
-        //Insérer la fonction de ligne droite
-        MOTOR_SetSpeed(0,0.5);
-        MOTOR_SetSpeed(1,0.5);
-    }*/
-    ReculeUTurn();
-    
-    MOTOR_SetSpeed(0,0.5);
-    MOTOR_SetSpeed(1,0.5); 
-   /* if (color != GetColor)
+    // Si la lecture de la couleur verte par le capteur est plus grande que les autre alors la couleur est verte
+    else if(color.readGreen() > color.readRed() && color.readGreen() > color.readBlue() && color.readGreen() > color.readClear())
     {
-        loop();
-        //Fonction que si il 
-    }*/
+        enumColor = Green;
+    }
+    // Si les valeurs de lecture du capteur sont au dessus de 1000 pour rouge, vert et transparent alors la couleur est jaune
+    else if(color.readRed() > 1000 && color.readGreen() > 1000 && color.readClear() > 1000)
+    {
+        enumColor = Yellow;
+    }
+    // Si toutes les lecture de couleur du capteur sont au dessus de 1000 alors la couleur est blanche
+    else if(color.readRed() > 1000 && color.readGreen() > 1000 && color.readBlue() > 1000 && color.readClear() > 900)
+    {
+        enumColor = White;
+    }
+
+    // Code à faire en fonction de la couleur détecter par le capteur
+    switch(enumColor) 
+    {
+        case Red :
+        {
+            //
+        } 
+        break;  
+
+        case Green :
+        {
+            //
+        } 
+        break;
+
+        case Blue :
+        {
+            //
+        } 
+        break;
+
+        case Yellow :
+        {
+            //
+        } 
+        break;
+
+        case White :
+        {
+            //
+        } 
+        break;
+
+        default :
+        {
+            // Fonction pour que le robot avance 
+        }
+        
+    }
+}
+
+// Fonction qui permet de calibrer le capteur de couleur
+void calibrateColorSensor()
+{
+    if(ROBUS_IsBumper(3))
+    {
+        Serial.println("Capteur en cours de calibration...");
+        color.calibrate();
+        delay(15000);
+        Serial.print("Capteur calibré !");
+    }
+    
 }
 
 void ReculeUTurn(){
@@ -187,4 +245,43 @@ void UTurn()
   MOTOR_SetSpeed(1, 0);
 }
 
+void setup()
+{
+    Serial.begin(9600);
+    color.init();
+    color.ledOn();
+}
+
+void loop(){
+    
+    /*if (ROBUS_IsBumper(2))
+    {
+        ReculeUTurn();
+    }
+   /* while (color == GetColor){
+        //Insérer la fonction de ligne droite
+        MOTOR_SetSpeed(0,0.5);
+        MOTOR_SetSpeed(1,0.5);
+    }*/
+    /*ReculeUTurn();
+    
+    MOTOR_SetSpeed(0,0.5);
+    MOTOR_SetSpeed(1,0.5); 
+   /* if (color != GetColor)
+    {
+        loop();
+        //Fonction que si il 
+    }*/
+    calibrateColorSensor();
+    if(ROBUS_IsBumper(2))
+    {
+        Serial.print("R: "); Serial.print(color.readRed());Serial.print(", ");
+        Serial.print("G: "); Serial.print(color.readGreen());Serial.print(", ");
+        Serial.print("B: "); Serial.print(color.readBlue());Serial.print(", ");
+        Serial.print("C: "); Serial.print(color.readClear());
+        Serial.println();
+  
+        delay(500);
+    }
+}
 
