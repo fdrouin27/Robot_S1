@@ -85,31 +85,41 @@ void checkColor()
     {
         case Red :
         {
-            
+            delay(500);
+            UTurn();
+            delay(500);
         } 
         break;  
 
         case Green :
         {
-            //
+            delay(500);
+            UTurn();
+            delay(500);
         } 
         break;
 
         case Blue :
         {
-            //
+            delay(500);
+            UTurn();
+            delay(500);
         } 
         break;
 
         case Yellow :
         {
-            //
+            delay(500);
+            UTurn();
+            delay(500);
         } 
         break;
 
         case White :
         {
-            //
+            delay(500);
+            UTurn();
+            delay(500);
         } 
         break;
 
@@ -147,6 +157,7 @@ void loop()
 
 
 }
+
 void ReculeUTurn(){
     MOTOR_SetSpeed(0,0);
     MOTOR_SetSpeed(1,0);    
