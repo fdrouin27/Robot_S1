@@ -1,9 +1,9 @@
 /*
-Projet: Le nom du script
-Equipe: Votre numero d'equipe
-Auteurs: Les membres auteurs du script
-Description: Breve description du script
-Date: Derniere date de modification
+Projet: Projet de robot S-1
+Equipe: P-08
+Auteurs: Julien Lavoie, Guillaume Frenette
+Description: Script général du robot, il contient toute les fonctions utilisées dans la loop()
+Date: 2018-10-27
 */
 
 /******************************************************************************
@@ -11,8 +11,9 @@ Inclure les librairies de functions que vous voulez utiliser
 ******************************************************************************/
 
 #include <LibRobus.h> // Essentielle pour utiliser RobUS
-#include <math.h>
-#include <ADJDS311.h>
+#include <math.h> // Librairie qui permet d'utiliser des fonctions mathématique
+#include <ADJDS311.h> // Librairie pour utiliser le capteur de couleur
+#include <string.h> // Librairie qui permet d'utiliser la variable string
 
 
 /******************************************************************************
@@ -26,6 +27,99 @@ const int ENCOCHES_TOTALES = 3200;
 const float DISTANCE_ENCOCHE = (DIAMETRE_ROUE * M_PI)/ENCOCHES_TOTALES;
 const float speedTourner = 0.35;
 
+// Variable pour le capteur de couleur
+uint8_t ledPin = 39; // Numéro de la Pin dans laquelle il faut brancher le fil du capteur de couleur, si vous changer le fil de place, changer le numéro ici
+ADJDS311 color(ledPin);
+
+// Fonction qui permet de calibrer le capteur de couleur
+void calibrateColorSensor()
+{
+    if(ROBUS_IsBumper(3))
+    {
+        Serial.println("Capteur en cours de calibration...");
+        color.calibrate();
+        delay(15000);
+        Serial.print("Capteur calibré !");
+    }
+}
+
+// Enum qui contient une liste de couleur
+enum Color 
+{ 
+    Red, 
+    Green,
+    Blue,
+    Yellow,
+    White
+};
+
+// Fonction qui vérifie les valeurs retourné par le capteur de couleur et la défini
+void checkColor()
+{
+    // Instancie une variable de l'enum afin de pouvoir utiliser les valeurs de celles-ci
+    Color enumColor;
+
+    // Si la lecture de la couleur rouge par le capteur est plus grande que les autre alors la couleur est rouge
+    if(color.readRed() > color.readGreen() && color.readRed() > color.readBlue() && color.readRed() > color.readClear())
+    {
+        enumColor = Red;
+    }
+    // Si la lecture de la couleur verte par le capteur est plus grande que les autre alors la couleur est verte
+    else if(color.readGreen() > color.readRed() && color.readGreen() > color.readBlue() && color.readGreen() > color.readClear())
+    {
+        enumColor = Green;
+    }
+    // Si les valeurs de lecture du capteur sont au dessus de 1000 pour rouge, vert et transparent alors la couleur est jaune
+    else if(color.readRed() > 1000 && color.readGreen() > 1000 && color.readClear() > 1000)
+    {
+        enumColor = Yellow;
+    }
+    // Si toutes les lecture de couleur du capteur sont au dessus de 1000 alors la couleur est blanche
+    else if(color.readRed() > 1000 && color.readGreen() > 1000 && color.readBlue() > 1000 && color.readClear() > 900)
+    {
+        enumColor = White;
+    }
+
+    // Code à faire en fonction de la couleur détecter par le capteur
+    switch(enumColor) 
+    {
+        case Red :
+        {
+            
+        } 
+        break;  
+
+        case Green :
+        {
+            //
+        } 
+        break;
+
+        case Blue :
+        {
+            //
+        } 
+        break;
+
+        case Yellow :
+        {
+            //
+        } 
+        break;
+
+        case White :
+        {
+            //
+        } 
+        break;
+
+        default :
+        {
+            // Fonction pour que le robot avance 
+        }
+        
+    }
+}
 
 void setup()
 {
